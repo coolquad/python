@@ -10,7 +10,7 @@ def norm_histogram(hist):
     :return: list
     """
 
-    pass
+    return hist/np.sum(hist)
 
 
 def compute_j(histo, width):
@@ -21,8 +21,14 @@ def compute_j(histo, width):
     :param width: float
     :return: float
     """
+    m = np.sum(histo)
+    w = width
+    proba_histo = norm_histogram(histo)
+    sum_proba_square = np.sum(proba_histo**2)
+    J = 2/((m-1)*w) - (m+1)/((m-1)*w) * sum_proba_square
 
-    pass
+    return J
+    
 
 
 def sweep_n(data, minimum, maximum, min_bins, max_bins):
@@ -38,8 +44,14 @@ def sweep_n(data, minimum, maximum, min_bins, max_bins):
     :param max_bins: int
     :return: list
     """
+    computed_Js = []
+    for num_bin in range(min_bins, max_bins+1):
+        histo = plt.hist(data, num_bin, (minimum, maximum))[0]
+        width = (maximum-minimum)/num_bin
+        J = compute_j(histo, width)
+        computed_Js.append(J)
 
-    pass
+    return np.array(computed_Js)
 
 
 def find_min(l):
@@ -50,7 +62,8 @@ def find_min(l):
     :param l: list
     :return: tuple
     """
-    pass
+    arg_min = np.argmin(l)
+    return l[arg_min], arg_min
 
 
 if __name__ == '__main__':
